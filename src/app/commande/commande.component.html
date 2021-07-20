@@ -1,0 +1,35 @@
+ <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="link"
+ [label]="pharmacie_name"
+ >
+          <agm-info-window>
+
+              <mat-card>
+                <mat-card-title>Nom du produit : {{ nom }} </mat-card-title>
+                <mat-card-subtitle>
+                  <mat-card>
+                    Nom de la pharmacie : {{ pharmacie_name }}
+                  </mat-card>
+                </mat-card-subtitle>
+                <mat-card-content>
+                  <mat-card>
+                    Quantite :{{ quantite }}
+                  </mat-card>
+                </mat-card-content>
+                <mat-card-footer>
+                  <mat-card>
+                        <mat-card>
+                          Prix unitaire : {{ prix }} FCFA .
+                          <mat-card-content>
+                            <mat-form-field class="example-full-width">
+                              <mat-label>Quantite</mat-label>
+                              <input matInput placeholder="1" value="1" type="number"  [(ngModel)]="qtecmd" name="quantite">
+                            </mat-form-field>
+                          <button (click)="commande()" class="btn btn-success">Commande</button>
+                          </mat-card-content> 
+                        </mat-card>
+                  </mat-card>
+                </mat-card-footer>
+              </mat-card>
+
+          </agm-info-window>
+      </agm-marker>

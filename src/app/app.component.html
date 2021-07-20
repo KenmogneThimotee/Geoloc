@@ -1,15 +1,133 @@
-<angular-popper *ngIf="acpCom" target="body" placement="top" modifiers="modifiers">
+<angular-popper *ngIf="cmdService.acpCom" target="body" placement="top" modifiers="modifiers">
   <p>
     <span>Commande accepte ! <i color="green" class="far fa-check-circle text-primary"></i></span>
   </p>
 </angular-popper>
 
-<angular-popper  *ngIf="refCom" target="body" placement="top" modifiers="modifiers">
+<angular-popper  *ngIf="cmdService.refCom" target="body" placement="top" modifiers="modifiers">
     <span class=text-danger>Commande refuse ! <i class="fas fa-times text-danger"></i></span>
     <p class=text-danger>
-      Motif : {{ refmotif }}
+      Motif : {{ cmdService.refmotif }}
     </p>
 </angular-popper>
+
+
+<div class="wrapper" *ngIf="produit_set">
+  <div class="manage">
+
+        <div class="search">
+      <form (ngSubmit)="search()">
+        <div class="search-form">
+          <div class="input-field first-wrap">
+            <div class="svg-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+              </svg>
+            </div>
+            <input id="search" type="text" placeholder="Que cherchez vous ?" name="query" [(ngModel)]="query"/>
+          </div>
+          <div class="input-field second-wrap">
+            <button class="btn-search" type="submit">SEARCH</button>
+          </div>
+        </div>
+          <p>
+              <span class="text-danger" *ngIf="search_error != '' ">{{ search_error }}</span>
+          </p>
+        <span class="info">ex.  piascledine, helicidine, lysopaine ...</span>
+
+        <p id="rotate" *ngIf="sch">
+                <svg version="1.1" id="L3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+      <circle fill="none" stroke="#fff" stroke-width="4" cx="50" cy="50" r="44" style="opacity:0.5;"/>
+        <circle fill="#fff" stroke="#00ad5f" stroke-width="3" cx="8" cy="54" r="6" >
+          <animateTransform
+            attributeName="transform"
+            dur="2s"
+            type="rotate"
+            from="0 50 48"
+            to="360 50 52"
+            repeatCount="indefinite" />
+          
+        </circle>
+      </svg>
+        </p>
+      </form>
+
+    </div>
+
+    
+    <div class="commande">
+
+      <table class="table table-dark table-striped tmark">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Pharmacie</th>
+              <th scope="col">Prix</th>
+              <th scope="col">Quantite</th>
+            </tr>
+          </thead>
+
+            <tbody>
+              <tr *ngFor="let mark of markers let i=index">
+                <th scope="row">{{ i+1 }}</th>
+                <td>{{ mark.pharmacie_name }}</td>
+                <td>{{ mark.prix_unit }}</td>
+                <td>{{ mark.quantite }}</td>
+              </tr>
+            </tbody>
+      </table>
+
+      <!--<mat-card *ngIf="produit_set">
+        <mat-card-title>
+          Trajet
+        </mat-card-title>
+        <select name="travelMode" [(ngModel)]="travelModel">
+          <option value="DRIVING">Voiture</option>
+          <option value="WALKING">Marche</option>
+        </select>
+      </mat-card>-->
+    </div>
+    </div>
+  <div class="map">
+
+    <agm-map [latitude]="lat" [longitude]="lon"  *ngIf="produit_set"
+       [zoom]="mapZoom"
+
+       >
+
+      <app-commande  *ngFor="let mark of markers let i=index"
+       [latitude]="mark.lat"
+        [longitude]="mark.lon"
+        [nom]="mark.nom"
+        [pharmacie_name]="mark.pharmacie_name"
+        [quantite]="mark.quantite"
+        [prix]="mark.prix_unit"
+        [produit_id]="mark.produit_id"
+        [pharmacie_domaine]="mark.pharmacie_domaine"
+        [index]="i"
+
+        (cmdEvent)="changgeQte(data)"
+        >
+      </app-commande>
+<!--
+      <agm-direction 
+        [origin]="origin" 
+        [destination]="destination"
+
+        [provideRouteAlternatives]="routealternative"
+        [travelMode]="travelModel"
+        [renderOptions]="renderOptions" 
+        [markerOptions]="markerOptions"
+      >
+      </agm-direction>
+  -->
+    </agm-map>
+
+    
+  </div>
+</div>
+
 
 <div class="s130" *ngIf="!produit_set">
     <form (ngSubmit)="search()">
@@ -20,13 +138,15 @@
                 <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
               </svg>
             </div>
-            <span class="text-danger" *ngIf="search_error != '' ">{{ search_error }}</span>
             <input id="search" type="text" placeholder="Que cherchez vous ?" name="query" [(ngModel)]="query"/>
           </div>
           <div class="input-field second-wrap">
             <button class="btn-search" type="submit">SEARCH</button>
           </div>
         </div>
+          <p>
+              <span class="text-danger" *ngIf="search_error != '' ">{{ search_error }}</span>
+          </p>
         <span class="info">ex. Paracetamol, Doliprane, Efferalgan, Kardegic, spasfon, Gaviscon, Eludril, piascledine, helicidine, lysopaine ...</span>
 
         <p id="rotate" *ngIf="sch">
@@ -55,6 +175,7 @@
 </div>
 
 
+<!--
 <mat-card *ngIf="produit_set">
   <mat-card-title>Nom du produit :{{ produit.nom }}</mat-card-title>
   <mat-card-subtitle>
@@ -109,5 +230,6 @@
   >
   </agm-direction>
 </agm-map>
+-->
 
   <!-- This templates was made by Colorlib (https://colorlib.com) -->

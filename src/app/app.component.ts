@@ -2,6 +2,8 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { CommandeService } from './services/commande.service'
 //import getMAC , { isMAC } from 'getmac' ;
 //import * as macAddress from "macaddress";
 
@@ -31,23 +33,26 @@ declare interface Produit{
 export class AppComponent implements OnInit {
   title = 'pharmo';
 
-  produit : Produit ;
+  produit : Array<Produit> ;
   produit_set = false ;
   query = "";
   lat = 0;
   lon = 0;
   ret : any ;
-  quantite: number;
+  quantite = 0;
   panier : any ;
   acpCom = false
   refmotif :string ;
   refCom = false
 
   origin : any;
-  destination : any;
+  destination: any;
+  markers : Array<Object>;
   travelModel = "WALKING"
   routealternative = true
   sch = false
+  mapZoom = 13 ;
+  minZoom = 40 ;
 
   public modifiers = {
     arrow : {
@@ -110,12 +115,17 @@ export class AppComponent implements OnInit {
 
   }
 
-  constructor(private httpclient : HttpClient){
+  constructor(private httpclient : HttpClient, public cmdService : CommandeService){
 
     this.panier = {
       "panier": []
     }
 
+  }
+
+
+  changeQte(data){
+    this.markers[data['index']+1]['quantite'] = data.qte 
   }
 
   search(){
@@ -128,14 +138,20 @@ export class AppComponent implements OnInit {
         //this.lat = dc['lat']
         //this.lon = dc['lon']
         this.sch = true
+        this.search_error = ""
         let param = new HttpParams().set("query",this.query).set("lon", this.lon.toString()).set("lat",this.lat.toString());
-        this.httpclient.get<Produit>("http://127.0.0.1:8000/search/", {"params":param}).subscribe((data) => {
+        this.httpclient.get<Produit[]>("http://127.0.0.1:8000/search/", {"params":param}).subscribe((data) => {
           console.log(data)
+           this.sch = false
           this.produit = data;
           this.produit_set = true;
-          this.destination = {"lat":this.produit.lat, "lng":this.produit.lon}
-          this.markerOptions.destination.label = this.produit.pharmacie_name
+          this.markers = data
+          this.cmdService.produit = data
+
+
+          console.log(this.markers)
         },(error) => {
+          this.sch = false
           console.log(error)
           if(error.status == 400){
             this.search_error = error.error.error
@@ -148,7 +164,10 @@ export class AppComponent implements OnInit {
 
   }
 
+/*
   commande(){
+
+
     let order = {
       "qte":this.quantite,
       "produitid":this.produit.produit_id,
@@ -173,17 +192,36 @@ export class AppComponent implements OnInit {
           console.log(data["erreur"][k])
           break;
         }
+
+        this.panier.panier = []
+
+        this.quantite = 0
+
+          setTimeout(()=>{
+          this.refCom = false
+        }, 5000)
       }else{
         this.acpCom = true
         this.refCom = false
 
-        this.produit.quantite -= this.quantite
+        this.panier.panier = []
+
+        
+        if(this.produit.quantite >= this.quantite){
+          this.produit.quantite -= this.quantite
+        }
+
+        this.quantite = 0
+
+        setTimeout(()=>{
+          this.acpCom = false
+        }, 5000)
       }
 
     }, (err) => {
       console.log(err)     
     } )
-  }  
+  }  */
 
 ngOnInit(){
   //this.getUserLocation().then(this.setPosition);

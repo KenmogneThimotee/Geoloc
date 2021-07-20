@@ -7,16 +7,19 @@ import { AgmDirectionModule } from 'agm-direction';
 import { MatCardModule } from '@angular/material/card'; 
 import {  MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPopper } from 'angular-popper';
+import { CommandeComponent } from './commande/commande.component' ;
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CommandeComponent
   ],
   imports: [
     BrowserModule,
@@ -31,10 +34,13 @@ import { NgxPopper } from 'angular-popper';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    NgxPopper
+    NgxPopper,
+    ReactiveFormsModule
    // agm-direction
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent,
+  CommandeComponent
+  ]
 })
 export class AppModule { }
