@@ -4,8 +4,8 @@ from django_tenants.models import TenantMixin, DomainMixin
 class Client(TenantMixin):
     schema_name = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    logitude = models.DecimalField(max_digits=100, decimal_places=2)
-    lattitude = models.DecimalField(max_digits=100, decimal_places=2)
+    logitude = models.DecimalField(max_digits=100, decimal_places=15)
+    lattitude = models.DecimalField(max_digits=100, decimal_places=15)
     ville = models.CharField(max_length=100)
 
 

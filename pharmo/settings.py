@@ -41,6 +41,7 @@ ALLOWED_HOSTS = ["*"]
 ]"""
 
 SHARED_APPS = [
+    'corsheaders',
     'tenantsys',
     'django_tenants',
     'django.contrib.contenttypes',
@@ -52,6 +53,7 @@ SHARED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'rest_framework',
+    'django_user_agents',
 
 ]
 
@@ -67,6 +69,7 @@ INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in S
 SITE_ID = 3
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +78,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = False
 

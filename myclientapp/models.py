@@ -3,10 +3,6 @@ from django.db import models
 # Create your models here.
 
 
-class Person(models.Model):
-    firstname = models.CharField(max_length=100)
-    lastname  = models.CharField(max_length=100)
-
 
 class Produit(models.Model):
     nom = models.CharField(max_length=100)
@@ -14,6 +10,10 @@ class Produit(models.Model):
     prix_unit = models.DecimalField(max_digits=100, decimal_places=2)
 
 
+    def __str__(self):
+        return self.nom
+
+        
 class Commande(models.Model):
     produit = models.ManyToManyField(Produit, through='ProduitCommande')
 
